@@ -1,3 +1,4 @@
+import http from "node:http";
 import express from "express";
 import cors from "cors";
 import ApiResponse from "./utils/ApiResponse.js";
@@ -22,7 +23,9 @@ app.use((err, req, res, next) => {
 		res.status(500).json({ message: "Server error" });
 	}
 });
+
+const server = http.createServer(app);
 (async function main() {
 	await connectDb();
-	app.listen(process.env.PORT ?? 8000, () => console.log("Server running"));
+	server.listen(process.env.PORT ?? 8000, () => console.log("Server running"));
 })();

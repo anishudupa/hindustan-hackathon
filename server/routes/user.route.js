@@ -8,8 +8,8 @@ const router = express.Router();
 
 router.post("/register", async (req, res, next) => {
 	try {
-		const { email, password } = req.body;
-		if (!email || !password) {
+		const { username, email, password } = req.body;
+		if (!username || !email || !password) {
 			res
 				.status(403)
 				.json(new ApiResponse("error", {}, 403, "all fields are must"));
@@ -23,7 +23,7 @@ router.post("/register", async (req, res, next) => {
 
 		const hashedPassword = await bcrypt.hash(password, 10);
 
-		const newUser = new User({ email, password: hashedPassword });
+		const newUser = new User({ username, email, password: hashedPassword });
 		newUser.save();
 		res.json(new ApiResponse("SUCCESS", {}, {}, "user created successfully"));
 		return;
@@ -55,7 +55,14 @@ router.post("/login", async (req, res, next) => {
 			return;
 		}
 
-		res.json(new ApiResponse("SUCCESS", {}, {}, "user logged in successfully"));
+		res.json(
+			new ApiResponse(
+				"SUCCESS",
+				user.username,
+				200,
+				"user logged in successfully"
+			)
+		);
 		return;
 	} catch (error) {
 		next(error);
